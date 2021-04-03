@@ -1,8 +1,11 @@
+const mongoose = require('mongoose')
 const express = require("express");
 const path = require("path");
 const apiRoutes = require('./routes/api-routes')
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dailydoodles");
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
