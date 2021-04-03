@@ -33,9 +33,16 @@ const userSeed = {
 
 const runSeeder = async () => {
   try {
-    // write code here to seed DB
-    // Insert Drawings
-    // Add Drawing ObjectIds to User's drawings array
+    await db.User.remove({})
+    await db.Drawing.remove({})
+    const result = await db.Drawing.insertMany(drawingsSeed, { raw: true })
+    const drawingIds = result.map(drawing => drawing._id)
+    const finalUserData = {
+      ...userSeed,
+      drawings: drawingIds
+    }
+    const user = await db.User.create(finalUserData)
+    await db.Drawing.update({}, { user: user._id })
   } catch(err) {
     throw new err
   }
