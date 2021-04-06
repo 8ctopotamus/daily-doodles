@@ -1,4 +1,4 @@
-const Button = ({ className, href = '#', ...props }) => (
+const Button = ({ className, href = '#', children, ...props }) => (
   <a href={href} className={`btn ${className}`} {...props}>{children}</a>
 )
 
