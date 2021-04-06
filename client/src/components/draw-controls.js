@@ -1,15 +1,9 @@
 import React from 'react'
 import { HexColorPicker } from "react-colorful";
-import { AiOutlineClear, AiOutlineUndo, AiFillSave, AiOutlineDownload } from 'react-icons/ai'
-import Button from '../components/button'
 
 const DrawControls = ({ 
   settings, 
   handleUpdateSettings,
-  save,
-  undo,
-  clear,
-  download,
 }) => (
   <div>
     <label htmlFor="brushColor">Brush Color</label>
@@ -27,28 +21,8 @@ const DrawControls = ({
       value={settings.brushRadius}
       min={1}
       max={60}
-      onChange={e => handleUpdateSettings(e.target.name, e.target.value)}
+      onChange={e => handleUpdateSettings(e.target.name, parseInt(e.target.value))}
     />
-    <div className="d-grid gap-2">
-      
-      <Button 
-        onClick={undo}
-        className="btn-light"
-      >
-        <AiOutlineUndo/> Undo
-      </Button>
-      <Button 
-        onClick={clear}
-        className="btn-light"
-      >
-        <AiOutlineClear/> Clear
-      </Button>
-      <Button 
-        className="btn-primary"
-      >
-        <AiFillSave/> Save
-      </Button>
-    </div>
   </div>
 )
 

@@ -11,8 +11,9 @@ const AddDrawingForm = ({ form, handleInputChange }) => {
         className="form-control" 
         type="text"
       />
-      <label htmlFor="title" className="form-label">
-        Email address
+      <br/>
+      <label htmlFor="body" className="form-label">
+        Description
       </label>
       <textarea
         name="body"
