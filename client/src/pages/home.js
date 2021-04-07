@@ -7,7 +7,6 @@ import DrawingCard from '../components/drawing-card'
 
 const Home = () => {
   const [drawings, setDrawings] = useState([])
-  console.log(drawings)  
 
   useEffect(() => {
     API.getDrawings()
