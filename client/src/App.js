@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import Draw from './pages/draw'
 import Home from './pages/home'
+import Chat from './pages/chat'
 import Nav from './components/nav'
 
 function App() {
@@ -12,6 +13,9 @@ function App() {
     <Router>
       <Nav />
       <Switch>
+        <Route path="/chat">
+          <Chat />
+        </Route>
         <Route path="/draw">
           <Draw />
         </Route>
