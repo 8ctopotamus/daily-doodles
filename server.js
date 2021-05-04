@@ -33,25 +33,42 @@ console.log('io', io.opts)
 //(http)server is used to create socket.io Server
 
 let lefty = true //the right approach is a hash table? array of objects
-const connectors = [
-  //   { righty:"",
-  //     lefty: "",
-  //     lonely:true,
-  //     waiting:false,
-  //     connUid: uniqId()
-  //  }
-]
+const connections = []// in memory connection persistence
+//const satisfied = []
+function Connector(name = "anon") {
+  this.righty = name
+  this.lefty = ""
+  this.lonely = true
+  this.waiting = false
+  // const rightness = Math.floor(Math.random() * 2) ? "righty" : "lefty"
+  // rightness ? this.righty = name : this.lefty = name
+}
+
 async function makeConnections(payload, cb) {
-  console.log(payload, cb)
-  //console.log(this)
-  cb({ mob: true })
+  let yourMatch;
+  console.log(payload)
+  const singles = connections.filter(conn => conn.lonely)
+  console.log(singles)
+  if (singles.length > 0) {
+    yourMatch = singles[0]
+    yourMatch.lonely = false
+    yourMatch.lefty = payload.name
+    //satisfied.push(yourMatch)
+  } else {
+    yourMatch = new Connector(payload.name)
+    connections.push(yourMatch)
+  }
+
+  console.log(connections)
+  cb({ connection: yourMatch })
+  //console.log(satisfied)
 }
 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
   socket.emit("FromAPI", `Tell me your name`)
-  lefty = !lefty //this is gonna scale poorly
+  //lefty = !lefty //this is gonna scale poorly
   socket.on("connectionPlease", makeConnections)
 
 });

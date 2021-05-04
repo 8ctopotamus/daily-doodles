@@ -6,26 +6,29 @@ import Col from '../components/col'
 import socketIOClient from "socket.io-client";
 //import useSocket from 'use-socket.io-client';
 import useMySocket from "../hooks/useMySocket"
-const ENDPOINT = "http://127.0.0.1:3001";
-const chatOpts = {
-    withCredentials: false,
+import { useSox } from '../hooks/useSox'
 
-}
 
 const Chat = () => {
     const [response, setResponse] = useState("no one is there");
     const [name, setName] = useState("anonymous");
     const [renderInput, setRenderInput] = useState(false);
     const [renderDraw, setRenderDraw] = useState(false);
-    const [socket] = useMySocket(ENDPOINT, chatOpts)
+    // const [socket] = useMySocket(ENDPOINT, chatOpts)
+    const socket = useSox()
+    console.log(socket)
+    useEffect(() => {
+        if (socket) {
+            socket.on("FromAPI", data => {
+                setResponse(data);
+                setRenderInput(true)
+            });
+            socket.on('flash', data => console.log('flash', data))
 
-    //socket.connect()
-    //console.log(socket)
-    socket.on("FromAPI", data => {
-        setResponse(data);
-        setRenderInput(true)
-    });
-    socket.on('flash', data => console.log('flash', data))
+
+            return socket.disconnect()
+        }
+    }, [socket])
 
 
     // useEffect(() => {
