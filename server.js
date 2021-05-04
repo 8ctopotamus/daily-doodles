@@ -48,16 +48,12 @@ function Connector(name = "anon", id) {
 
 async function makeConnections(payload, cb) {
   let yourMatch;
-  //console.log(payload)
   const singles = connections.filter(conn => conn.lonely)
-  //console.log(singles)
   if (singles.length > 0) {
-
     yourMatch = singles[0]
     yourMatch.lonely = false
     yourMatch.lefty = payload.name
     yourMatch.leftyId = this.id
-
     this.join(yourMatch.roomId)
     this.to(yourMatch.roomId).emit("notalone", { connection: yourMatch })
   } else {
@@ -70,13 +66,20 @@ async function makeConnections(payload, cb) {
   cb({ connection: yourMatch })
 }
 
+function makeLigaments({ roomId }) {
+  let ligAmt = Math.floor((Math.random() * 4) + 1)
+  ligAmt = Array.from({length: ligAmt}, () => 0)
+  const ligaments = ligAmt.map(() => Math.floor((Math.random() * 99) + 1))
+  io.to(roomId).emit('newLigaments', { ligaments })
+}
+
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
   socket.emit("FromAPI", `Tell me your name`)
   //lefty = !lefty //this is gonna scale poorly
   socket.on("connectionPlease", makeConnections)
-
+  socket.on("ligamentsPlease", makeLigaments)
 });
 
 

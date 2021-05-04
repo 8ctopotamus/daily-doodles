@@ -14,11 +14,11 @@ const Chat = () => {
     const [conn, setConn] = useState(null)
     const [renderInput, setRenderInput] = useState(false);
     const [renderDraw, setRenderDraw] = useState(false);
+    const [ligaments, setLigaments] = useState([])
 
     const socket = useSox()
     useEffect(() => {
         if (socket) {
-
             socket.on("FromAPI", data => {
                 setResponse(data);
                 setRenderInput(true)
@@ -28,11 +28,12 @@ const Chat = () => {
                 console.log(this.id)
                 const other = this.id == connection.rightyId ? connection.lefty : connection.righty
                 setAlone(`your corpsing with ${other}`)
+                socket.emit('ligamentsPlease', { roomId: connection.roomId })
             })
-            return socket.disconnect()
+            socket.on('newLigaments', ({ ligaments }) => setLigaments(ligaments))
+            // return socket.disconnect()
         }
     }, [socket])
-
 
     // useEffect(() => {
     //     const socket = socketIOClient(ENDPOINT);
@@ -77,14 +78,20 @@ const Chat = () => {
                 <input name="name" type="text" onChange={dispatchInputChange} value={name} />
                 <button onClick={() => submitName()}>That's me</button>
             </Row>}
-            {renderDraw && <Row>
+            {renderDraw && ligaments.length > 0 && <Row>
                 <p>
                     10 paces, then draw
                     </p>
                 <p>
                     {alone}
                 </p>
-                <Draw canvasHeight={800} canvasWidth={400} defaultTitle={conn.roomId + (rightness ? "R" : "L")} />
+                <Draw 
+                    canvasHeight={800} 
+                    canvasWidth={800} 
+                    defaultTitle={conn.roomId + (rightness ? "R" : "L")} 
+                    ligaments={ligaments}
+                    rightness={rightness}
+                />
             </Row>}
         </Container>
     )

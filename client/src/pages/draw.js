@@ -9,7 +9,13 @@ import AddDrawingForm from '../components/add-drawing-form'
 import Button from '../components/button'
 import API from '../utils/API'
 
-const Draw = ({ canvasWidth = 800, canvasHeight = 800, defaultTitle = 'New Drawing' }) => {
+const Draw = ({ 
+  canvasWidth = 800, 
+  canvasHeight = 800, 
+  defaultTitle = 'New Drawing', 
+  ligaments = [], 
+  rightness = true
+}) => {
   const history = useHistory()
 
   const [form, setForm] = useState({
@@ -62,13 +68,25 @@ const Draw = ({ canvasWidth = 800, canvasHeight = 800, defaultTitle = 'New Drawi
     <Container>
       <Row>
         <Col className="col-lg-9">
-          <CanvasDraw
-            ref={canvasRef}
-            brushColor={settings.brushColor}
-            brushRadius={settings.brushRadius}
-            canvasWidth={settings.canvasWidth}
-            canvasHeight={settings.canvasHeight}
-          />
+          <div style={{width: 'auto', position: 'relative', display: 'inline-block'}}>
+            {ligaments.map(l => (
+              <div style={{
+                position: 'absolute',
+                top: `${l}%`,
+                [rightness ? 'right' : 'left']: 0,
+                background: 'black',
+                height: 10,
+                width: 10,
+              }}></div>
+            ))}
+            <CanvasDraw
+              ref={canvasRef}
+              brushColor={settings.brushColor}
+              brushRadius={settings.brushRadius}
+              canvasWidth={settings.canvasWidth}
+              canvasHeight={settings.canvasHeight}
+            />
+          </div>
         </Col>
         <Col className="col-lg-3">
           <AddDrawingForm
