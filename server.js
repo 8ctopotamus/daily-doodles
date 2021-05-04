@@ -22,9 +22,11 @@ const io = new Server(server, ioOptions);
 //app handles routes
 //app is used to create (http)server
 //(http)server is used to create socket.io Server
-
+let lefty = true
 io.on('connection', (socket) => {
-  socket.emit("FromAPI", "This is API speaking")
+
+  socket.emit("FromAPI", `This is API speaking: you are ${lefty ? "lefty" : "righty"}`)
+  lefty = !lefty //this is gonna scale poorly
   console.log('a user connected', socket);
 });
 

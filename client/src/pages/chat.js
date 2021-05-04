@@ -7,7 +7,7 @@ import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:3000";
 
 const Chat = () => {
-    const [response, setResponse] = useState("");
+    const [response, setResponse] = useState("no one is there");
 
     useEffect(() => {
         const socket = socketIOClient(ENDPOINT);
@@ -15,12 +15,13 @@ const Chat = () => {
         socket.on("FromAPI", data => {
             setResponse(data);
         });
+        return () => socket.disconnect();
     }, []);
 
     return (
         <Container>
             <Row>
-                static vs {response}
+                Hello Api: {response}
 
             </Row>
         </Container>
