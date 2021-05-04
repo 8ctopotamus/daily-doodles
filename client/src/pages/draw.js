@@ -14,7 +14,8 @@ const Draw = ({
   canvasHeight = 800, 
   defaultTitle = 'New Drawing', 
   ligaments = [], 
-  rightness = true
+  rightness = true,
+  roomId,
 }) => {
   const history = useHistory()
 
@@ -49,7 +50,9 @@ const Draw = ({
   const save = () => {
     const postData = {
       ...form,
-      drawing: canvasRef.current.getSaveData()
+      drawing: canvasRef.current.getSaveData(),
+      rightness,
+      roomId,
     }
     API.saveDrawing(postData)
       .then(response => history.push('/'))
@@ -66,6 +69,7 @@ const Draw = ({
 
   return (
     <Container>
+      {rightness.toString}
       <Row>
         <Col className="col-lg-9">
           <div style={{width: 'auto', position: 'relative', display: 'inline-block'}}>
