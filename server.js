@@ -6,35 +6,52 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const cors = require('cors')
 const morgan = require('morgan')
+const uniqId = require('uniqid');
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dailydoodles");
 
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const ioOptions = {
-  cors: true,
-  origins: ["http://127.0.0.1:3000"],
-}
-const io = new Server(server, ioOptions);
-//io.set('origins', 'localhost:3000');
-
-//app handles routes
-//app is used to create (http)server
-//(http)server is used to create socket.io Server
-let lefty = true
-io.on('connection', (socket) => {
-
-  socket.emit("FromAPI", `This is API speaking: you are ${lefty ? "lefty" : "righty"}`)
-  lefty = !lefty //this is gonna scale poorly
-  console.log('a user connected', socket);
-});
-
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('dev'))
 app.use(cors())
+const ioOptions = {
+  cors: true,
+  origins: ["http://127.0.0.1:3001"],
+  methods: ["GET", "POST"],
+  credentials: false
+}
+const io = new Server(server, ioOptions);
+console.log('io', io.opts)
+//io.set('origins', 'localhost:3000');
+
+//app handles routes
+//app is used to create (http)server
+//(http)server is used to create socket.io Server
+
+let lefty = true //the right approach is a hash table? array of objects
+const connectors = [
+  //   { righty:"",
+  //     lefty: "",
+  //     lonely:true,
+  //     waiting:false,
+  //     connUid: uniqId()
+  //  }
+]
+async function makeConnections(payload, cb) { console.log(payload) }
+
+io.on('connection', (socket) => {
+  console.log('a user connected', socket.id);
+
+  socket.emit("FromAPI", `Tell me your name`)
+  lefty = !lefty //this is gonna scale poorly
+  socket.on("connectionPlease", makeConnections)
+
+});
+
 
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
