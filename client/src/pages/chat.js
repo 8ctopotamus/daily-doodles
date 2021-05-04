@@ -3,20 +3,19 @@ import API from '../utils/API'
 import Container from '../components/container'
 import Row from '../components/row'
 import Col from '../components/col'
-import socketIOClient from "socket.io-client";
-//import useSocket from 'use-socket.io-client';
-import useMySocket from "../hooks/useMySocket"
 import { useSox } from '../hooks/useSox'
-
+import Draw from "../pages/draw"
 
 const Chat = () => {
     const [response, setResponse] = useState("no one is there");
     const [name, setName] = useState("anonymous");
+    const [rightness, setRightness] = useState(false);
+    const [alone, setAlone] = useState("alone");
+    const [conn, setConn] = useState(null)
     const [renderInput, setRenderInput] = useState(false);
     const [renderDraw, setRenderDraw] = useState(false);
-    // const [socket] = useMySocket(ENDPOINT, chatOpts)
+
     const socket = useSox()
-    console.log(socket)
     useEffect(() => {
         if (socket) {
 
@@ -24,9 +23,12 @@ const Chat = () => {
                 setResponse(data);
                 setRenderInput(true)
             });
-            socket.on('flash', data => console.log('flash', data))
-
-
+            socket.on('notalone', function ({ connection }) {
+                console.log('na', connection)
+                console.log(this.id)
+                const other = this.id == connection.rightyId ? connection.lefty : connection.righty
+                setAlone(`your corpsing with ${other}`)
+            })
             return socket.disconnect()
         }
     }, [socket])
@@ -49,8 +51,20 @@ const Chat = () => {
     }
 
     const submitName = () => {
-        socket.emit("connectionPlease", { name: name }, (data) => {
-            console.log("connectionServed", data)
+        socket.emit("connectionPlease", { name: name }, ({ connection }) => {
+            console.log("connectionServed", connection)
+            if (connection.lonely) {
+                setAlone(`you are all alone in ${connection.roomId}`)
+                setResponse(`ok ${connection.righty}`)
+                setRightness(true)
+            } else {
+                setAlone(`your corpsing with ${connection.righty}`)
+                setResponse(`ok ${connection.lefty}`)
+                setRightness(false)
+            }
+            setConn(connection)
+            setRenderInput(false)
+            setRenderDraw(true)
         })
     }
 
@@ -59,12 +73,18 @@ const Chat = () => {
             <Row>
                 Api says: {response}
             </Row>
-            { renderInput && <Row>
+            {renderInput && <Row>
                 <input name="name" type="text" onChange={dispatchInputChange} value={name} />
                 <button onClick={() => submitName()}>That's me</button>
             </Row>}
             {renderDraw && <Row>
-                10 paces, then draw
+                <p>
+                    10 paces, then draw
+                    </p>
+                <p>
+                    {alone}
+                </p>
+                <Draw canvasHeight={800} canvasWidth={400} defaultTitle={conn.roomId + (rightness ? "R" : "L")} />
             </Row>}
         </Container>
     )

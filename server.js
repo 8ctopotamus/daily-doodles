@@ -13,11 +13,12 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/dailydoodles");
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-// Define middleware here
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan('dev'))
 app.use(cors())
+
 const ioOptions = {
   cors: true,
   origins: ["http://127.0.0.1:3001"],
@@ -26,7 +27,6 @@ const ioOptions = {
 }
 const io = new Server(server, ioOptions);
 console.log('io', io.opts)
-//io.set('origins', 'localhost:3000');
 
 //app handles routes
 //app is used to create (http)server
@@ -34,10 +34,12 @@ console.log('io', io.opts)
 
 let lefty = true //the right approach is a hash table? array of objects
 const connections = []// in memory connection persistence
-//const satisfied = []
-function Connector(name = "anon") {
+function Connector(name = "anon", id) {
+  this.roomId = uniqId()
   this.righty = name
+  this.rightyId = id
   this.lefty = ""
+  this.leftyId = ""
   this.lonely = true
   this.waiting = false
   // const rightness = Math.floor(Math.random() * 2) ? "righty" : "lefty"
@@ -46,22 +48,26 @@ function Connector(name = "anon") {
 
 async function makeConnections(payload, cb) {
   let yourMatch;
-  console.log(payload)
+  //console.log(payload)
   const singles = connections.filter(conn => conn.lonely)
-  console.log(singles)
+  //console.log(singles)
   if (singles.length > 0) {
+
     yourMatch = singles[0]
     yourMatch.lonely = false
     yourMatch.lefty = payload.name
-    //satisfied.push(yourMatch)
-  } else {
-    yourMatch = new Connector(payload.name)
-    connections.push(yourMatch)
-  }
+    yourMatch.leftyId = this.id
 
+    this.join(yourMatch.roomId)
+    this.to(yourMatch.roomId).emit("notalone", { connection: yourMatch })
+  } else {
+    yourMatch = new Connector(payload.name, this.id)
+    connections.push(yourMatch)
+
+    this.join(yourMatch.roomId)
+  }
   console.log(connections)
   cb({ connection: yourMatch })
-  //console.log(satisfied)
 }
 
 io.on('connection', (socket) => {
