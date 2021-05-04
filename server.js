@@ -67,7 +67,9 @@ async function makeConnections(payload, cb) {
 }
 
 function makeLigaments({ roomId }) {
-  let ligAmt = Math.floor((Math.random() * 4) + 1)
+  const min = 2
+  const max = 6
+  let ligAmt = Math.floor(Math.random() * (max - min + 1) + min)
   ligAmt = Array.from({length: ligAmt}, () => 0)
   const ligaments = ligAmt.map(() => Math.floor((Math.random() * 99) + 1))
   io.to(roomId).emit('newLigaments', { ligaments })
