@@ -19,6 +19,7 @@ const Chat = () => {
     console.log(socket)
     useEffect(() => {
         if (socket) {
+
             socket.on("FromAPI", data => {
                 setResponse(data);
                 setRenderInput(true)

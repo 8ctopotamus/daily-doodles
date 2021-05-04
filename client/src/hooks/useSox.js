@@ -23,8 +23,13 @@ export const useSox = () => {
 // Provider hook that creates auth object and handles state
 function useProvideSox() {
     const [sox, setSox] = useState(null);
+    const [load, setLoad] = useState(false);
+    useEffect(() => {
+        if (sox) sox.connect()
+    }, [load])
     useEffect(() => {
         setSox(io(ENDPOINT, chatOpts))
+        setLoad(true)
         return () => {
             sox && sox.removeAllListeners();
             sox && sox.close();
