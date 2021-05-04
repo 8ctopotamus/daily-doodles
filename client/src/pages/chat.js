@@ -7,22 +7,25 @@ import socketIOClient from "socket.io-client";
 //import useSocket from 'use-socket.io-client';
 import useMySocket from "../hooks/useMySocket"
 const ENDPOINT = "http://127.0.0.1:3001";
+const chatOpts = {
+    withCredentials: false,
+
+}
 
 const Chat = () => {
     const [response, setResponse] = useState("no one is there");
-    const [name, setName] = useState("no one is there");
+    const [name, setName] = useState("anonymous");
     const [renderInput, setRenderInput] = useState(false);
     const [renderDraw, setRenderDraw] = useState(false);
-    const [socket] = useMySocket(ENDPOINT,
-        {
-            withCredentials: false,
-        })
-    socket.connect()
-    console.log(socket)
+    const [socket] = useMySocket(ENDPOINT, chatOpts)
+
+    //socket.connect()
+    //console.log(socket)
     socket.on("FromAPI", data => {
         setResponse(data);
         setRenderInput(true)
     });
+    socket.on('flash', data => console.log('flash', data))
 
 
     // useEffect(() => {
@@ -51,10 +54,10 @@ const Chat = () => {
                 Api says: {response}
             </Row>
             { renderInput && <Row>
-                <input name="name" type="text" onChange={dispatchInputChange} />
+                <input name="name" type="text" onChange={dispatchInputChange} value={name} />
                 <button onClick={() => submitName()}>That's me</button>
             </Row>}
-            { renderDraw && <Row>
+            {renderDraw && <Row>
                 10 paces, then draw
             </Row>}
         </Container>

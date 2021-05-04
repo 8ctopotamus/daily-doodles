@@ -41,7 +41,11 @@ const connectors = [
   //     connUid: uniqId()
   //  }
 ]
-async function makeConnections(payload, cb) { console.log(payload) }
+async function makeConnections(payload, cb) {
+  console.log(payload)
+  //console.log(this)
+  this.emit("flash", { mob: true })
+}
 
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
