@@ -42,9 +42,9 @@ const connectors = [
   //  }
 ]
 async function makeConnections(payload, cb) {
-  console.log(payload)
+  console.log(payload, cb)
   //console.log(this)
-  this.emit("flash", { mob: true })
+  cb({ mob: true })
 }
 
 io.on('connection', (socket) => {

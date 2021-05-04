@@ -45,7 +45,9 @@ const Chat = () => {
     }
 
     const submitName = () => {
-        socket.emit("connectionPlease", { name: name })
+        socket.emit("connectionPlease", { name: name }, (data) => {
+            console.log("connectionServed", data)
+        })
     }
 
     return (
