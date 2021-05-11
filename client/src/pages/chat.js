@@ -90,6 +90,7 @@ const Chat = () => {
                     ligaments={ligaments}
                     rightness={rightness}
                     roomId={conn.roomId}
+                    signature={name}
                 />
             </Row>}
         </Container>

@@ -9,13 +9,14 @@ import AddDrawingForm from '../components/add-drawing-form'
 import Button from '../components/button'
 import API from '../utils/API'
 
-const Draw = ({ 
-  canvasWidth = 800, 
-  canvasHeight = 800, 
-  defaultTitle = 'New Drawing', 
-  ligaments = [], 
+const Draw = ({
+  canvasWidth = 800,
+  canvasHeight = 800,
+  defaultTitle = 'New Drawing',
+  ligaments = [],
   rightness = true,
   roomId,
+  signature
 }) => {
   const history = useHistory()
 
@@ -50,6 +51,7 @@ const Draw = ({
   const save = () => {
     const postData = {
       ...form,
+      body: form.body + `\n${signature}`,
       drawing: canvasRef.current.getSaveData(),
       rightness,
       roomId,
@@ -72,7 +74,7 @@ const Draw = ({
       {rightness.toString}
       <Row>
         <Col className="col-lg-9">
-          <div style={{width: 'auto', position: 'relative', display: 'inline-block'}}>
+          <div style={{ width: 'auto', position: 'relative', display: 'inline-block' }}>
             {ligaments.map(l => (
               <div style={{
                 position: 'absolute',
