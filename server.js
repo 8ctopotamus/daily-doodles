@@ -14,11 +14,11 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: "'50mb'" }));
 app.use(morgan('dev'))
 app.use(cors())
-
+//socketio payload problems https://stackoverflow.com/questions/19917401/error-request-entity-too-large
 const ioOptions = {
   cors: true,
   origins: ["http://127.0.0.1:3001"],
@@ -32,7 +32,7 @@ console.log('io', io.opts)
 //app is used to create (http)server
 //(http)server is used to create socket.io Server
 
-let lefty = true //the right approach is a hash table? array of objects
+//let lefty = true //the right approach is a hash table? array of objects
 const connections = []// in memory connection persistence
 function Connector(name = "anon", id) {
   this.roomId = uniqId()
@@ -80,7 +80,7 @@ function makeLigaments({ roomId }) {
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
-  socket.emit("FromAPI", `Tell me your name`)
+  socket.emit("FromAPI", `How you gonna sign`)
   //lefty = !lefty //this is gonna scale poorly
   socket.on("connectionPlease", makeConnections)
   socket.on("ligamentsPlease", makeLigaments)

@@ -78,13 +78,15 @@ const Chat = () => {
                 <input name="name" type="text" onChange={dispatchInputChange} value={name} />
                 <button onClick={() => submitName()}>That's me</button>
             </Row>}
-            {renderDraw && ligaments.length > 0 && <Row>
-                <p>10 paces, then draw</p>
+            {renderDraw && <Row>
                 <p>{alone}</p>
-                <Draw 
-                    canvasHeight={800} 
-                    canvasWidth={800} 
-                    defaultTitle={conn.roomId + (rightness ? "R" : "L")} 
+            </Row>}
+            {ligaments.length > 0 && <Row>
+                <p>10 paces, then draw</p>
+                <Draw
+                    canvasHeight={800}
+                    canvasWidth={800}
+                    defaultTitle={conn.roomId + (rightness ? "R" : "L")}
                     ligaments={ligaments}
                     rightness={rightness}
                     roomId={conn.roomId}
