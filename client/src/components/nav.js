@@ -13,6 +13,9 @@ const Nav = () => (
           <li className="nav-item">
             <Link to="/draw" className="nav-link" aria-current="page" href="#">Draw</Link>
           </li>
+          <li className="nav-item">
+            <Link to="/chat" className="nav-link" aria-current="page" href="#">Play!</Link>
+          </li>
         </ul>
       </div>
     </div>

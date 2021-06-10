@@ -1,7 +1,11 @@
 const router = require('express').Router()
+const corpseController = require('../controllers/corpseController')
 const drawingController = require('../controllers/drawingController')
 const userController = require('../controllers/userController')
 
+router.route('/api/corpses')
+  .get(corpseController.find)
+  
 router.route('/api/drawings/:id')
   .get(drawingController.getDrawing)
   .put(drawingController.updateDrawing)

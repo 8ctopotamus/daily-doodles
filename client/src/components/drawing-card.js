@@ -13,7 +13,7 @@ const DrawingCard = ({ title, date, drawing, body }) => {
       <CanvasDraw ref={canvasRef} disabled={true} />
       <div className="card-body">
         <h5 className="card-title">{title}</h5>
-        <small>{ date.split('T')[0] }</small>
+        {/* <small>{ date.split('T')[0] }</small> */}
         <p className="card-text">{body}</p>
         {/* <a href="#" className="btn btn-primary">Go somewhere</a> */}
       </div>

@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import API from '../utils/API'
 import Container from '../components/container'
-import Row from '../components/row'
-import Col from '../components/col'
-import DrawingCard from '../components/drawing-card'
+import CorpseCard from '../components/corpse-card'
 
 const Home = () => {
-  const [drawings, setDrawings] = useState([])
+  const [corpses, setCorpses] = useState([])
 
   useEffect(() => {
-    API.getDrawings()
-      .then(response => setDrawings(response.data))
+    API.findAllTheCorpses()
+      .then(response => setCorpses(response.data))
       .catch(err => console.log(err))
   }, [])
-  
+
   return (
     <Container>
-      <Row>
-        { drawings.map(drawing => (
-          <Col className="col-md-4" key={drawing._id}>
-            <DrawingCard {...drawing} />
-          </Col>
-        )) }
-      </Row>
+      { corpses.map(corpse => <CorpseCard {...corpse} key={corpse._id} />) }
     </Container>
   )
 }

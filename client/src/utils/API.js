@@ -6,5 +6,8 @@ export default {
   },
   saveDrawing: function(data) {
     return axios.post('/api/drawings', data)
+  },
+  findAllTheCorpses: function() {
+    return axios.get('/api/corpses')
   }
 }

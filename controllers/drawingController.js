@@ -1,15 +1,26 @@
 const db = require('../models')
 
 module.exports = {
-  createDrawing: function(req, res) {
-    db.Drawing.create(req.body)
-      .then(drawingData => {
-        res.json(drawingData)
-      })
-      .catch(err => {
-        console.log(err)
-        res.status(500).send()
-      })
+  createDrawing: async function(req, res) {
+    try {
+      const { roomId, rightness, ...body } = req.body
+      const corpseFound = await db.Corpse.exists({ roomId: roomId })
+
+      
+      const drawing = await db.Drawing.create(body)
+      const side = rightness ? 'right' : 'left'
+      
+      console.log('corpseFound', corpseFound, 'rightness', rightness)
+      
+      if (corpseFound) {
+        await db.Corpse.findOneAndUpdate({ roomId }, {[side]: drawing._id })
+      } else {
+        await db.Corpse.create({ roomId, [side]: drawing._id })
+      }
+      res.json(drawing)
+    } catch(err) {
+      res.status(500).send()
+    }
   },
   getDrawings: function(req, res) {
     db.Drawing.find({})
